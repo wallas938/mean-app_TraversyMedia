@@ -20,26 +20,33 @@ mongoose.connection.on('error', (error) => {
     console.log('Connected to database', error);
 })
 
-const app = express();
+// Instantiate server
+const sever = express();
 
 // CORS Middleware
-app.use(cors());
+sever.use(cors());
 
-app.use(express.static(path.join(__dirname, 'client')))
+sever.use(express.static(path.join(__dirname, 'client')))
 
 // Body parser
-app.use(bodyParser.json());
+sever.use(bodyParser.json());
 
-app.use('/users', usersRouter);
+// Passport Middleware
+sever.use(passport.initialize());
+sever.use(passport.session()); 
+
+require('./config/passport')(passport);
+
+sever.use('/users', usersRouter);
 
 const PORT = 3000;
 
 // Index Route
-app.get('/', (req, res, next) => {
+sever.get('/', (req, res, next) => {
     res.send('Invalid endpoint!');
 })
 
 // Start Server
-app.listen(PORT, ()=> {
+sever.listen(PORT, ()=> {
     console.log('Server started on port', PORT);
 })
