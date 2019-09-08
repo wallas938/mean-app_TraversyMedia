@@ -3,5 +3,6 @@
         "flash",
         "message",
         "string"
-    ]
+    ],
+    "editor.fontFamily": "Courier New",
 }
