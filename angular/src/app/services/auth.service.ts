@@ -8,9 +8,10 @@ import { Observable } from "rxjs";
 })
 export class AuthService {
   authToken: any;
+
   user: any;
 
-  uri: String = "http://localhost:3000/users";
+  uri: String = "http://localhost:3000/";
 
   constructor(private http: HttpClient) {}
 
@@ -21,7 +22,7 @@ export class AuthService {
         Authorization: "my-auth-token"
       })
     };
-    return this.http.post(this.uri + "/register", user, httpOptions);
+    return this.http.post(this.uri + "users/register", user, httpOptions);
   }
 
   authenticateUser(user): Observable<Object> {
@@ -31,7 +32,18 @@ export class AuthService {
         Authorization: "my-auth-token"
       })
     };
-    return this.http.post(this.uri + "/authenticate", user, httpOptions);
+    return this.http.post(this.uri + "users/authenticate", user, httpOptions);
+  }
+
+  getProfile(): Observable<Object> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: this.authToken
+      })
+    };
+    this.loadToken();
+    return this.http.get(this.uri + "users/profile", httpOptions);
   }
 
   storeUserData(token, user) {
@@ -40,6 +52,11 @@ export class AuthService {
 
     this.authToken = token;
     this.user = user;
+  }
+
+  loadToken() {
+    const token = localStorage.getItem('id_token');
+    this.authToken = token;
   }
 
   logout() {
